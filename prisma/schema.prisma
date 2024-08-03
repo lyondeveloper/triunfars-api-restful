@@ -141,7 +141,6 @@ model Course {
   learningGoals String[]
   requirements String[]
   audience String[]
-  averageRating String?
   price String?
 
   coverImage String?

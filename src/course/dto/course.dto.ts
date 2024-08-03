@@ -17,9 +17,6 @@ export class CreateCourseDto {
   categoryId: string;
 
   @IsString()
-  averageRating: string;
-
-  @IsString()
   price: string;
 }
 
@@ -29,6 +26,5 @@ export interface UpdateCourseDto {
   instructorId: string;
   instanceId: string;
   categoryId: string;
-  averageRating: string;
   price: string;
 }
