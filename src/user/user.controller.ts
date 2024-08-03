@@ -19,15 +19,11 @@ import { hasRoles } from 'src/auth/decorators/roles.decorators';
 @UseGuards(JwtGuard)
 @Controller('users')
 export class UsersController {
-  constructor(
-    private usersService: UsersService,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   @Get('/me/privileges')
   getMyPrivileges(@GetMe() user: User) {
-    return this.usersService.getMyPrivileges(
-      user,
-    );
+    return this.usersService.getMyPrivileges(user);
   }
 
   @Get('/me')
@@ -37,6 +33,7 @@ export class UsersController {
 
   @Patch('/me')
   editMe(@GetMe() user: User, dto: EditMeDto) {
+    console.log(dto);
     return this.usersService.editMe(user);
   }
 
@@ -48,10 +45,7 @@ export class UsersController {
   @UseGuards(RolesGuard)
   @hasRoles(Role.ADMIN)
   @Put('/:id')
-  updateUser(
-    @Body() dto: User,
-    @Param('id') id: string,
-  ) {
+  updateUser(@Body() dto: User, @Param('id') id: string) {
     return this.usersService.updateUser(dto, id);
   }
 

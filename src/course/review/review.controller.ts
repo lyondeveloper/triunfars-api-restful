@@ -10,17 +10,12 @@ import {
 } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
 import { ReviewService } from './review.service';
-import {
-  CreateReviewDto,
-  UpdateReviewDto,
-} from './dto';
+import { CreateReviewDto, UpdateReviewDto } from './dto';
 
 UseGuards(JwtGuard);
 @Controller()
 export class ReviewController {
-  constructor(
-    private readonly reviewService: ReviewService,
-  ) {}
+  constructor(private readonly reviewService: ReviewService) {}
 
   @Get()
   getAll(@Param('courseId') courseId: string) {
@@ -32,20 +27,14 @@ export class ReviewController {
     @Param('courseId') courseId: string,
     @Param('reviewId') reviewId: string,
   ) {
-    return this.reviewService.getById(
-      courseId,
-      reviewId,
-    );
+    return this.reviewService.getById(courseId, reviewId);
   }
   @Post()
   createReview(
     @Body() dto: CreateReviewDto,
     @Param('courseId') courseId: string,
   ) {
-    return this.reviewService.createReview(
-      dto,
-      courseId,
-    );
+    return this.reviewService.createReview(dto, courseId);
   }
   @Patch(':reviewId')
   updateReview(
@@ -53,11 +42,7 @@ export class ReviewController {
     @Param('courseId') courseId: string,
     @Param('reviewId') reviewId: string,
   ) {
-    return this.reviewService.updateReview(
-      dto,
-      courseId,
-      reviewId,
-    );
+    return this.reviewService.updateReview(dto, courseId, reviewId);
   }
 
   @Delete(':reviewId')
@@ -65,9 +50,6 @@ export class ReviewController {
     @Param('courseId') courseId: string,
     @Param('reviewId') reviewId: string,
   ) {
-    return this.reviewService.deleteReview(
-      courseId,
-      reviewId,
-    );
+    return this.reviewService.deleteReview(courseId, reviewId);
   }
 }

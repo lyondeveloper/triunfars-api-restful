@@ -6,7 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -15,18 +14,13 @@ import { JwtGuard } from 'src/auth/guard';
 import { SectionService } from './section.service';
 import { CreateSectionDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Response } from 'express';
 
 @UseGuards(JwtGuard)
 @Controller()
 export class SectionController {
-  constructor(
-    private readonly sectionService: SectionService,
-  ) {}
+  constructor(private readonly sectionService: SectionService) {}
   @Get()
-  getAll(
-    @Param('courseSlug') courseSlug: string,
-  ) {
+  getAll(@Param('courseSlug') courseSlug: string) {
     return this.sectionService.getAll(courseSlug);
   }
 
@@ -35,26 +29,17 @@ export class SectionController {
     @Param('courseSlug') courseSlug: string,
     @Param('sectionSlug') sectionSlug: string,
   ) {
-    return this.sectionService.getBySlug(
-      courseSlug,
-      sectionSlug,
-    );
+    return this.sectionService.getBySlug(courseSlug, sectionSlug);
   }
 
   @Patch(':sectionSlug/uploadimage')
-  @UseInterceptors(
-    FileInterceptor('file'),
-  )
+  @UseInterceptors(FileInterceptor('file'))
   addSectionImage(
     @UploadedFile() file: Express.Multer.File,
     @Param('sectionSlug') sectionSlug: string,
     @Param('courseSlug') courseSlug: string,
   ) {
-    return this.sectionService.addSectionImage(
-      sectionSlug,
-      courseSlug,
-      file,
-    );
+    return this.sectionService.addSectionImage(sectionSlug, courseSlug, file);
   }
 
   @Post()
@@ -62,10 +47,7 @@ export class SectionController {
     @Body() dto: CreateSectionDto,
     @Param('courseSlug') courseSlug: string,
   ) {
-    return this.sectionService.createSection(
-      courseSlug,
-      dto,
-    );
+    return this.sectionService.createSection(courseSlug, dto);
   }
 
   @Patch(':sectionSlug')
@@ -74,11 +56,7 @@ export class SectionController {
     @Param('sectionSlug') sectionSlug: string,
     @Param('courseSlug') courseSlug: string,
   ) {
-    return this.sectionService.updateSection(
-      courseSlug,
-      sectionSlug,
-      dto,
-    );
+    return this.sectionService.updateSection(courseSlug, sectionSlug, dto);
   }
 
   @Delete(':sectionSlug')
@@ -86,9 +64,6 @@ export class SectionController {
     @Param('sectionSlug') sectionSlug: string,
     @Param('courseSlug') courseSlug: string,
   ) {
-    return this.sectionService.deleteSection(
-      courseSlug,
-      sectionSlug,
-    );
+    return this.sectionService.deleteSection(courseSlug, sectionSlug);
   }
 }

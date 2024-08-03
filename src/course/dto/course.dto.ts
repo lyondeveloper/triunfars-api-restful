@@ -1,4 +1,3 @@
-// import { LocalFile } from '@prisma/client';
 import { IsString } from 'class-validator';
 
 export class CreateCourseDto {
@@ -7,8 +6,6 @@ export class CreateCourseDto {
 
   @IsString()
   description: string;
-
-  // imageUrl: LocalFile;
 
   @IsString()
   instructorId: string;
@@ -29,7 +26,6 @@ export class CreateCourseDto {
 export interface UpdateCourseDto {
   title: string;
   description: string;
-  // imageUrl: LocalFile;
   instructorId: string;
   instanceId: string;
   categoryId: string;

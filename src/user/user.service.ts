@@ -1,7 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto } from './dto';
 import { User } from '@prisma/client';
@@ -16,22 +13,16 @@ export class UsersService {
 
   async getMyPrivileges(user: User) {
     try {
-      const role =
-        await this.prisma.user.findUnique({
-          where: { id: user.id },
-          select: {
-            role: true,
-          },
-        });
+      const role = await this.prisma.user.findUnique({
+        where: { id: user.id },
+        select: {
+          role: true,
+        },
+      });
       return role;
     } catch (error) {
-      console.log(
-        'GET_MY_PRIVILEGES ==>>',
-        error,
-      );
-      throw new ForbiddenException(
-        'Internal error',
-      );
+      console.log('GET_MY_PRIVILEGES ==>>', error);
+      throw new ForbiddenException('Internal error');
     }
   }
 
@@ -58,38 +49,27 @@ export class UsersService {
       return user;
     } catch (error) {
       console.log('EDIT_ME ==>>', error);
-      throw new ForbiddenException(
-        'Internal error',
-      );
+      throw new ForbiddenException('Internal error');
     }
   }
 
   // TODO: check we don't update the user current logged in
-  async updateUser(
-    dto: UpdateUserDto,
-    id: string,
-  ) {
+  async updateUser(dto: UpdateUserDto, id: string) {
     try {
-      const userUpdated = this.prisma.user.update(
-        {
-          where: {
-            id,
-          },
-          data: { ...dto },
+      const userUpdated = this.prisma.user.update({
+        where: {
+          id,
         },
-      );
+        data: { ...dto },
+      });
 
       if (!userUpdated)
-        throw new ForbiddenException(
-          'Unexpected error, user not updated',
-        );
+        throw new ForbiddenException('Unexpected error, user not updated');
 
       return userUpdated;
     } catch (error) {
       console.log('UPDATE_USER ==>>', error);
-      throw new ForbiddenException(
-        'Internal error',
-      );
+      throw new ForbiddenException('Internal error');
     }
   }
 
@@ -100,16 +80,12 @@ export class UsersService {
       });
 
       if (!user)
-        throw new ForbiddenException(
-          'Unexpected error, user not deleted',
-        );
+        throw new ForbiddenException('Unexpected error, user not deleted');
 
       return user;
     } catch (error) {
       console.log('DELETE_USER ==>>', error);
-      throw new ForbiddenException(
-        'Internal error',
-      );
+      throw new ForbiddenException('Internal error');
     }
   }
 }

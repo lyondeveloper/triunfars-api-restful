@@ -12,10 +12,7 @@ import {
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { JwtGuard } from 'src/auth/guard';
-import {
-  CreateCourseDto,
-  UpdateCourseDto,
-} from './dto';
+import { CreateCourseDto, UpdateCourseDto } from './dto';
 import { hasRoles } from 'src/auth/decorators/roles.decorators';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { Role } from '@prisma/client';
@@ -24,9 +21,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 @UseGuards(JwtGuard)
 @Controller()
 export class CourseController {
-  constructor(
-    private readonly courseService: CourseService,
-  ) {}
+  constructor(private readonly courseService: CourseService) {}
 
   @Get()
   getAll() {
@@ -48,30 +43,19 @@ export class CourseController {
   // @UseGuards(RolesGuard)
   // @hasRoles(Role.ADMIN, Role.INSTRUCTOR)
   @Patch(':id')
-  updateCourse(
-    @Body() dto: UpdateCourseDto,
-    @Param('id') id: string,
-  ) {
-    return this.courseService.updateCourse(
-      dto,
-      id,
-    );
+  updateCourse(@Body() dto: UpdateCourseDto, @Param('id') id: string) {
+    return this.courseService.updateCourse(dto, id);
   }
 
   // @UseGuards(RolesGuard)
   // @hasRoles(Role.ADMIN, Role.INSTRUCTOR)
   @Patch(':courseSlug/uploadimage')
-  @UseInterceptors(
-    FileInterceptor('file'),
-  )
+  @UseInterceptors(FileInterceptor('file'))
   addSectionImage(
     @UploadedFile() file: Express.Multer.File,
     @Param('courseSlug') courseSlug: string,
   ) {
-    return this.courseService.updateCourseImage(
-      courseSlug,
-      file,
-    );
+    return this.courseService.updateCourseImage(courseSlug, file);
   }
 
   @Delete(':id')

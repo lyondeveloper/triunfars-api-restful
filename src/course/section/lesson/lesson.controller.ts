@@ -18,9 +18,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 UseGuards(JwtGuard);
 @Controller()
 export class LessonController {
-  constructor(
-    private readonly lessonService: LessonService,
-  ) {}
+  constructor(private readonly lessonService: LessonService) {}
 
   @Get()
   getAll(@Param('sectionSlug') sectionSlug: string) {
@@ -32,10 +30,7 @@ export class LessonController {
     @Param('lessonId') lessonId: string,
     @Param('sectionSlug') sectionSlug: string,
   ) {
-    return this.lessonService.getById(
-      sectionSlug,
-      lessonId,
-    );
+    return this.lessonService.getById(sectionSlug, lessonId);
   }
 
   @Post()
@@ -43,10 +38,7 @@ export class LessonController {
     @Body() dto: CreateUpdateLessonDto,
     @Param('sectionSlug') sectionSlug: string,
   ) {
-    return this.lessonService.createLesson(
-      sectionSlug,
-      dto,
-    );
+    return this.lessonService.createLesson(sectionSlug, dto);
   }
 
   @Patch(':lessonId')
@@ -55,27 +47,17 @@ export class LessonController {
     @Param('lessonId') lessonId: string,
     @Param('sectionSlug') sectionSlug: string,
   ) {
-    return this.lessonService.updateLesson(
-      dto,
-      lessonId,
-      sectionSlug,
-    );
+    return this.lessonService.updateLesson(dto, lessonId, sectionSlug);
   }
 
   @Patch(':lessonId/uploadimage')
-  @UseInterceptors(
-    FileInterceptor('file'),
-  )
+  @UseInterceptors(FileInterceptor('file'))
   addSectionImage(
     @UploadedFile() file: Express.Multer.File,
     @Param('sectionSlug') sectionSlug: string,
     @Param('lessonId') lessonId: string,
   ) {
-    return this.lessonService.addLessonImage(
-      file,
-      lessonId,
-      sectionSlug,
-    );
+    return this.lessonService.addLessonImage(file, lessonId, sectionSlug);
   }
 
   @Delete(':lessonId')
@@ -83,9 +65,6 @@ export class LessonController {
     @Param('lessonId') lessonId: string,
     @Param('sectionSlug') sectionSlug: string,
   ) {
-    return this.lessonService.deleteLesson(
-      lessonId,
-      sectionSlug,
-    );
+    return this.lessonService.deleteLesson(lessonId, sectionSlug);
   }
 }

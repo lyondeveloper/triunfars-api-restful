@@ -1,7 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUpdateLessonDto } from './dto';
 import slugify from 'slugify';
@@ -26,24 +23,15 @@ export class LessonService {
       //   throw new ForbiddenException(
       //     'Course does not exist',
       //   );
-      const section =
-        await this.prisma.section.findUnique({
-          where: { slug: sectionSlug },
-        });
+      const section = await this.prisma.section.findUnique({
+        where: { slug: sectionSlug },
+      });
 
-      if (!section)
-        throw new ForbiddenException(
-          'Section does not exist',
-        );
+      if (!section) throw new ForbiddenException('Section does not exist');
       return section;
     } catch (error) {
-      console.log(
-        'CHECK_SECTION_ERROR ==>>',
-        error,
-      );
-      throw new ForbiddenException(
-        'Server internal error',
-      );
+      console.log('CHECK_SECTION_ERROR ==>>', error);
+      throw new ForbiddenException('Server internal error');
     }
   }
 
@@ -54,62 +42,38 @@ export class LessonService {
     });
   }
 
-  async getById(
-    sectionSlug: string,
-    lessonId: string,
-  ) {
+  async getById(sectionSlug: string, lessonId: string) {
     try {
-      const section =
-        await this.checkSection(sectionSlug);
-      const lesson =
-        await this.prisma.lesson.findUnique({
-          where: {
-            sectionId: section.id,
-            id: lessonId,
-          },
-        });
+      const section = await this.checkSection(sectionSlug);
+      const lesson = await this.prisma.lesson.findUnique({
+        where: {
+          sectionId: section.id,
+          id: lessonId,
+        },
+      });
 
-      if (!lesson)
-        throw new ForbiddenException(
-          'Lesson not found',
-        );
+      if (!lesson) throw new ForbiddenException('Lesson not found');
 
       return lesson;
     } catch (error) {
-      console.log(
-        'LESSON_BY_ID_ERROR ==>>',
-        error,
-      );
-      throw new ForbiddenException(
-        'Server internal error',
-      );
+      console.log('LESSON_BY_ID_ERROR ==>>', error);
+      throw new ForbiddenException('Server internal error');
     }
   }
 
-  async createLesson(
-    sectionSlug: string,
-    dto: CreateUpdateLessonDto,
-  ) {
+  async createLesson(sectionSlug: string, dto: CreateUpdateLessonDto) {
     try {
       const section = await this.checkSection(sectionSlug);
       const slug = slugify(dto.title);
-      const newLesson =
-        await this.prisma.lesson.create({
-          data: { ...dto, sectionId: section.id, slug },
-        });
+      const newLesson = await this.prisma.lesson.create({
+        data: { ...dto, sectionId: section.id, slug },
+      });
       if (!newLesson)
-        throw new ForbiddenException(
-          'Unexpected error, lesson not created',
-        );
+        throw new ForbiddenException('Unexpected error, lesson not created');
       return newLesson;
     } catch (error) {
-      console.log(
-        'CREATE_LESSON_ERROR ==>>',
-        error,
-      );
-      throw new ForbiddenException(
-        'Server internal error',
-      );
+      console.log('CREATE_LESSON_ERROR ==>>', error);
+      throw new ForbiddenException('Server internal error');
     }
   }
 
@@ -121,30 +85,26 @@ export class LessonService {
     try {
       const section = await this.checkSection(sectionSlug);
       const slug = slugify(dto.title);
-      const updatedLesson =
-        await this.prisma.lesson.update({
-          where: { id: lessonId, sectionId: section.id },
-          data: { ...dto, slug },
-        });
+      const updatedLesson = await this.prisma.lesson.update({
+        where: { id: lessonId, sectionId: section.id },
+        data: { ...dto, slug },
+      });
 
       if (!updatedLesson)
-        throw new ForbiddenException(
-          'Unexpected error, lesson not updated',
-        );
+        throw new ForbiddenException('Unexpected error, lesson not updated');
 
       return updatedLesson;
     } catch (error) {
-      console.log(
-        'UPDATE_LESSON_ERROR ==>>',
-        error,
-      );
-      throw new ForbiddenException(
-        'Server internal error',
-      );
+      console.log('UPDATE_LESSON_ERROR ==>>', error);
+      throw new ForbiddenException('Server internal error');
     }
   }
 
-  async addLessonImage(file: Express.Multer.File, lessonId: string, sectionSlug: string) {
+  async addLessonImage(
+    file: Express.Multer.File,
+    lessonId: string,
+    sectionSlug: string,
+  ) {
     try {
       const section = await this.checkSection(sectionSlug);
 
@@ -154,9 +114,9 @@ export class LessonService {
       const lessonUpdated = await this.prisma.lesson.update({
         where: {
           id: lessonId,
-          sectionId: section.id
+          sectionId: section.id,
         },
-        data: { coverImage: imageUrl }
+        data: { coverImage: imageUrl },
       });
 
       if (!lessonUpdated) {
@@ -165,44 +125,28 @@ export class LessonService {
 
       return lessonUpdated;
     } catch (error) {
-      console.log(
-        'ADD_LESSON_IMAGE_ERROR ==>>',
-        error,
-      );
-      throw new ForbiddenException(
-        'Server internal error',
-      );
+      console.log('ADD_LESSON_IMAGE_ERROR ==>>', error);
+      throw new ForbiddenException('Server internal error');
     }
   }
 
-  async deleteLesson(
-    lessonId: string,
-    sectionId: string,
-  ) {
+  async deleteLesson(lessonId: string, sectionId: string) {
     try {
       await this.checkSection(sectionId);
 
-      const deletedLesson =
-        await this.prisma.lesson.delete({
-          where: { id: lessonId, sectionId },
-        });
+      const deletedLesson = await this.prisma.lesson.delete({
+        where: { id: lessonId, sectionId },
+      });
       if (!deletedLesson)
-        throw new ForbiddenException(
-          'Unexpected error, lesson not deleted',
-        );
+        throw new ForbiddenException('Unexpected error, lesson not deleted');
 
       return {
         success: true,
         deletedData: deletedLesson,
       };
     } catch (error) {
-      console.log(
-        'DELETE_LESSON_ERROR ==>>',
-        error,
-      );
-      throw new ForbiddenException(
-        'Server internal error',
-      );
+      console.log('DELETE_LESSON_ERROR ==>>', error);
+      throw new ForbiddenException('Server internal error');
     }
   }
 }

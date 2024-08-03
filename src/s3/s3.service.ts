@@ -16,10 +16,12 @@ export class S3Service {
     this.s3 = new S3Client({
       region: this.region,
       credentials: {
-        secretAccessKey: this.configService.get<string>('AWS_SECRET_ACCESS_KEY'),
+        secretAccessKey: this.configService.get<string>(
+          'AWS_SECRET_ACCESS_KEY',
+        ),
         accessKeyId: this.configService.get<string>('AWS_ACCESS_KEY_ID'),
-      }
-    })
+      },
+    });
   }
 
   async uploadFile(file: Express.Multer.File, key: string) {
@@ -30,12 +32,14 @@ export class S3Service {
       Key: key,
       ContentType: file.mimetype,
       ACL: 'public-read',
-    }
+    };
 
     try {
-      const response: PutObjectCommandOutput = await this.s3.send(new PutObjectCommand(input));
+      const response: PutObjectCommandOutput = await this.s3.send(
+        new PutObjectCommand(input),
+      );
       if (response.$metadata.httpStatusCode === 200) {
-        return `https://${bucket}.s3.${this.region}.amazonaws.com/${key}`
+        return `https://${bucket}.s3.${this.region}.amazonaws.com/${key}`;
       }
       throw new Error('Image not save');
     } catch (error) {

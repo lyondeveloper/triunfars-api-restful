@@ -1,18 +1,15 @@
-import {
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import {
-  CreateInstanceDto,
-  UpdateInstanceDto,
-} from './dto';
+import { CreateInstanceDto, UpdateInstanceDto } from './dto';
 import slugify from 'slugify';
 import { S3Service } from 'src/s3/s3.service';
 
 @Injectable()
 export class InstancesService {
-  constructor(private readonly prisma: PrismaService, private readonly s3Service: S3Service) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly s3Service: S3Service,
+  ) {}
 
   getInstances() {
     return this.prisma.instance.findMany({
@@ -35,66 +32,52 @@ export class InstancesService {
 
   async getInstanceBySlug(slug: string) {
     try {
-      const instance =
-        await this.prisma.instance.findUnique({
-          where: {
-            slug,
-          },
-          include: {
-            users: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-              },
+      const instance = await this.prisma.instance.findUnique({
+        where: {
+          slug,
+        },
+        include: {
+          users: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
             },
           },
-        });
+        },
+      });
 
-      if (!instance)
-        throw new ForbiddenException(
-          'Instance not found',
-        );
+      if (!instance) throw new ForbiddenException('Instance not found');
 
       return instance;
     } catch (error) {
-      console.log(
-        'GET_INSTANCE_BY_SLUG ==>>',
-        error,
-      );
+      console.log('GET_INSTANCE_BY_SLUG ==>>', error);
       throw error;
     }
   }
 
   async getInstanceById(id: string) {
     try {
-      const instance =
-        await this.prisma.instance.findUnique({
-          where: {
-            id,
-          },
-          include: {
-            users: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-              },
+      const instance = await this.prisma.instance.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          users: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
             },
           },
-        });
+        },
+      });
 
-      if (!instance)
-        throw new ForbiddenException(
-          'Instance not found',
-        );
+      if (!instance) throw new ForbiddenException('Instance not found');
 
       return instance;
     } catch (error) {
-      console.log(
-        'GET_INSTANCE_BY_Id ==>>',
-        error,
-      );
+      console.log('GET_INSTANCE_BY_Id ==>>', error);
       throw error;
     }
   }
@@ -102,47 +85,34 @@ export class InstancesService {
   async createInstance(dto: CreateInstanceDto) {
     try {
       const slug = slugify(dto.name);
-      const newInstance =
-        await this.prisma.instance.create({
-          data: { ...dto, slug },
-        });
+      const newInstance = await this.prisma.instance.create({
+        data: { ...dto, slug },
+      });
 
       if (!newInstance)
-        throw new ForbiddenException(
-          'Unexpected error, instance not created',
-        );
+        throw new ForbiddenException('Unexpected error, instance not created');
 
       return newInstance;
     } catch (error) {
       console.log('CREATE_INSTANCE ==>>', error);
-      throw new ForbiddenException(
-        'Server Internal Error',
-      );
+      throw new ForbiddenException('Server Internal Error');
     }
   }
-  async updateInstance(
-    dto: UpdateInstanceDto,
-    id: string,
-  ) {
+  async updateInstance(dto: UpdateInstanceDto, id: string) {
     try {
       const slug = slugify(dto.name);
-      const instanceUpdated =
-        await this.prisma.instance.update({
-          where: { id },
-          data: { ...dto, slug },
-        });
+      const instanceUpdated = await this.prisma.instance.update({
+        where: { id },
+        data: { ...dto, slug },
+      });
 
       if (!instanceUpdated)
-        throw new ForbiddenException(
-          'Unexpected error, instance not updated',
-        );
+        throw new ForbiddenException('Unexpected error, instance not updated');
 
       return instanceUpdated;
     } catch (error) {
       console.log('UPDATE_INSTANCE ==>>', error);
-      throw new ForbiddenException(
-        'Server Internal Error',
-      );
+      throw new ForbiddenException('Server Internal Error');
     }
   }
 
@@ -157,34 +127,27 @@ export class InstancesService {
         where: {
           id,
         },
-        data: { logo: imageUrl }
+        data: { logo: imageUrl },
       });
 
       if (!instanceUpdated)
-        throw new ForbiddenException(
-          'Unexpected error, instance not updated',
-        );
+        throw new ForbiddenException('Unexpected error, instance not updated');
 
       return instanceUpdated;
     } catch (error) {
       console.log('ADD_INSTANCE_IMAGE ==>>', error);
-      throw new ForbiddenException(
-        'Server Internal Error',
-      );
+      throw new ForbiddenException('Server Internal Error');
     }
   }
 
   async deleteInstance(id: string) {
     try {
-      const instanceDeleted =
-        await this.prisma.instance.delete({
-          where: { id },
-        });
+      const instanceDeleted = await this.prisma.instance.delete({
+        where: { id },
+      });
 
       if (!instanceDeleted)
-        throw new ForbiddenException(
-          'Unexpected error, instance not deleted',
-        );
+        throw new ForbiddenException('Unexpected error, instance not deleted');
 
       return {
         success: true,
@@ -192,9 +155,7 @@ export class InstancesService {
       };
     } catch (error) {
       console.log('DELETE_INSTANCE ==>>', error);
-      throw new ForbiddenException(
-        'Server Internal Error',
-      );
+      throw new ForbiddenException('Server Internal Error');
     }
   }
 }
