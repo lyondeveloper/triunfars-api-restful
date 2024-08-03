@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+    output = "../../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  INSTRUCTOR
+  STUDENT
+}
+
+enum LessonType {
+  VIDEO
+  AUDIO
+  TEXT
+}
+
+model Lesson {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  title  String
+  description String
+  type LessonType @default(VIDEO)
+  content String
+  url String
+  slug String @unique
+  coverImage String?
+
+  sectionId String @db.ObjectId
+  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  name   String @unique
+  slug   String @unique
+  courses Course[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Section {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  slug  String @unique
+
+  coverImage String?
+  
+  courseId String @db.ObjectId
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  lessons Lesson[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  text  String
+  rating Int
+
+  courseId String @db.ObjectId
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  userId String @db.ObjectId
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Instance {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  name   String @unique
+  slug   String @unique
+  logo   String?
+  themeColor String?
+  users User[]
+  courses Course[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  firstName String
+  lastName String
+
+  email String @unique
+  password String
+  role Role @default(STUDENT)
+  bio String?
+  avatar String?
+
+  instanceId String @db.ObjectId
+  instance Instance @relation(fields: [instanceId], references: [id])
+
+  courses Course[]
+  reviews Review[]
+
+  // resetPasswordToken String
+  // resetPasswordExpire DateTime
+  isEmailConfirmed Boolean @default(false)
+  disabled Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Course {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  title  String @unique
+  slug   String @unique
+  description   String
+  
+
+  instructorId String @db.ObjectId 
+  instructor User @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  categoryId String @db.ObjectId
+  category Category @relation(fields: [categoryId], references: [id])
+
+  instanceId String @db.ObjectId
+  instance Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  sections Section[]
+  reviews Review[]
+
+  learningGoals String[]
+  requirements String[]
+  audience String[]
+  averageRating String?
+  price String?
+
+  coverImage String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
