@@ -10,6 +10,7 @@ export class CreateUpdateLessonDto {
 
   @IsString()
   @IsUrl()
+  @IsOptional()
   url: string;
 
   @IsOptional()
