@@ -9,8 +9,8 @@ export class CreateUpdateLessonDto {
   description: string;
 
   @IsString()
-  @IsUrl()
   @IsOptional()
+  @IsUrl()
   url: string;
 
   @IsOptional()
