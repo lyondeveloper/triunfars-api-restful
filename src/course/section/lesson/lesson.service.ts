@@ -39,6 +39,7 @@ export class LessonService {
     const section = await this.checkSection(sectionSlug);
     return this.prisma.lesson.findMany({
       where: { sectionId: section.id },
+      include: { section: true },
     });
   }
 
@@ -50,6 +51,7 @@ export class LessonService {
           sectionId: section.id,
           id: lessonId,
         },
+        include: { section: true },
       });
 
       if (!lesson) throw new ForbiddenException('Lesson not found');
