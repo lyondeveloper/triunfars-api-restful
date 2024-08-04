@@ -39,7 +39,18 @@ export class LessonService {
     const section = await this.checkSection(sectionSlug);
     return this.prisma.lesson.findMany({
       where: { sectionId: section.id },
-      include: { section: true },
+      include: {
+        section: {
+          select: {
+            slug: true,
+            course: {
+              select: {
+                slug: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
@@ -51,7 +62,18 @@ export class LessonService {
           sectionId: section.id,
           id: lessonId,
         },
-        include: { section: true },
+        include: {
+          section: {
+            select: {
+              slug: true,
+              course: {
+                select: {
+                  slug: true,
+                },
+              },
+            },
+          },
+        },
       });
 
       if (!lesson) throw new ForbiddenException('Lesson not found');
