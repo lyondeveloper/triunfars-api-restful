@@ -1,7 +1,7 @@
 import { LessonType } from '@prisma/client';
 import { IsOptional, IsString, IsUrl } from 'class-validator';
 
-export class CreateUpdateLessonDto {
+export class CreateLessonDto {
   @IsString()
   title: string;
 

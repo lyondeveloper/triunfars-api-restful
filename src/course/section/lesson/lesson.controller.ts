@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { JwtGuard } from 'src/auth/guard';
-import { CreateUpdateLessonDto } from './dto';
+import { CreateLessonDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 UseGuards(JwtGuard);
@@ -35,7 +35,7 @@ export class LessonController {
 
   @Post()
   createLesson(
-    @Body() dto: CreateUpdateLessonDto,
+    @Body() dto: CreateLessonDto,
     @Param('sectionSlug') sectionSlug: string,
   ) {
     return this.lessonService.createLesson(sectionSlug, dto);
@@ -43,7 +43,7 @@ export class LessonController {
 
   @Patch(':lessonId')
   updateLesson(
-    @Body() dto: CreateUpdateLessonDto,
+    @Body() dto: Partial<CreateLessonDto>,
     @Param('lessonId') lessonId: string,
     @Param('sectionSlug') sectionSlug: string,
   ) {

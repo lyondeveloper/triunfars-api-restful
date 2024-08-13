@@ -26,8 +26,18 @@ export class UsersService {
     }
   }
 
-  getMe(user: User) {
-    return user;
+  async getMe(user: User) {
+    try {
+      const me = await this.prisma.user.findUnique({
+        where: { id: user.id },
+        include: { instance: true },
+      });
+      if (!me) throw new ForbiddenException('Error while finding user');
+      return me;
+    } catch (error) {
+      console.log('GET_ME_ERROR ==>>', error);
+      throw new ForbiddenException('Internal error');
+    }
   }
 
   async editMe(user: User) {

@@ -18,6 +18,26 @@ export class CourseService {
           category: true,
           instance: true,
           instructor: true,
+          sections: {
+            select: {
+              id: true,
+              title: true,
+              slug: true,
+              coverImage: true,
+              lessons: {
+                select: {
+                  id: true,
+                  title: true,
+                  type: true,
+                  description: true,
+                  content: true,
+                  url: true,
+                  coverImage: true,
+                  slug: true,
+                },
+              },
+            },
+          },
         },
       });
     } catch (error) {
@@ -30,6 +50,31 @@ export class CourseService {
     try {
       const course = await this.prisma.course.findUnique({
         where: { slug },
+        include: {
+          category: true,
+          instance: true,
+          instructor: true,
+          sections: {
+            select: {
+              id: true,
+              title: true,
+              slug: true,
+              coverImage: true,
+              lessons: {
+                select: {
+                  id: true,
+                  title: true,
+                  type: true,
+                  description: true,
+                  content: true,
+                  url: true,
+                  coverImage: true,
+                  slug: true,
+                },
+              },
+            },
+          },
+        },
       });
 
       if (!course) throw new ForbiddenException('Course not found');

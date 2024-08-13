@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUpdateLessonDto } from './dto';
+import { CreateLessonDto } from './dto';
 import slugify from 'slugify';
 import { S3Service } from 'src/s3/s3.service';
 
@@ -85,7 +85,7 @@ export class LessonService {
     }
   }
 
-  async createLesson(sectionSlug: string, dto: CreateUpdateLessonDto) {
+  async createLesson(sectionSlug: string, dto: CreateLessonDto) {
     try {
       const section = await this.checkSection(sectionSlug);
       const slug = slugify(dto.title);
@@ -102,7 +102,7 @@ export class LessonService {
   }
 
   async updateLesson(
-    dto: CreateUpdateLessonDto,
+    dto: Partial<CreateLessonDto>,
     lessonId: string,
     sectionSlug: string,
   ) {
