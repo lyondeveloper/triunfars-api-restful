@@ -11,9 +11,11 @@ export class CourseService {
     private readonly s3Service: S3Service,
   ) {}
 
-  async getAll() {
+  async getAll(instanceId: string) {
     try {
+      if (!instanceId) throw new ForbiddenException('Instance Id is required');
       return await this.prisma.course.findMany({
+        where: { instanceId },
         include: {
           category: true,
           instance: true,

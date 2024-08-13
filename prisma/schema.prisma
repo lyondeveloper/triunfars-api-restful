@@ -133,7 +133,7 @@ model Course {
   category Category @relation(fields: [categoryId], references: [id])
 
   instanceId String @db.ObjectId
-  instance Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+  instance Instance @relation(fields: [instanceId], references: [id])
 
   sections Section[]
   reviews Review[]

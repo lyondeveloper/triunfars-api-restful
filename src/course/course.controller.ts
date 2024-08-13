@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -24,8 +25,8 @@ export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
   @Get()
-  getAll() {
-    return this.courseService.getAll();
+  getAll(@Query() query) {
+    return this.courseService.getAll(query.instanceId);
   }
 
   @Get(':slug')
